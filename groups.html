@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Formatter & Lister</title>
+    <style>
+        /* General Styles & Mobile First Approach */
+        :root {
+            --primary-color: #28a745;
+            --primary-hover: #218838;
+            --secondary-color: #6c757d;
+            --secondary-hover: #5a6268;
+            --tertiary-color: #6f42c1; /* Purple for the new button */
+            --tertiary-hover: #5a32a3;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --light-gray: #f8f9fa;
+            --border-color: #ced4da;
+            --text-color: #343a40;
+            --bg-color: #ffffff;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 15px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .input-area, .output-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .counter {
+            font-size: 0.85em;
+            font-weight: normal;
+            background-color: var(--light-gray);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--secondary-color);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: "Menlo", "Consolas", "Courier New", monospace;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #formatBtn { background-color: var(--primary-color); }
+        #formatBtn:hover { background-color: var(--primary-hover); }
+
+        #breakdownBtn { background-color: var(--tertiary-color); }
+        #breakdownBtn:hover { background-color: var(--tertiary-hover); }
+        
+        #copyBtn { background-color: var(--secondary-color); }
+        #copyBtn:hover { background-color: var(--secondary-hover); }
+
+        #clearBtn { background-color: var(--danger-color); }
+        #clearBtn:hover { background-color: var(--danger-hover); }
+
+        /* Styles for the Breakdown Area */
+        .breakdown-container {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .breakdown-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        
+        .breakdown-box h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: var(--text-color);
+        }
+
+        .breakdown-box textarea {
+            min-height: 160px;
+            margin-bottom: 10px;
+            background-color: var(--light-gray);
+            cursor: default;
+        }
+
+        .breakdown-box button {
+            align-self: flex-end; /* Pushes button to the right */
+            background-color: var(--secondary-color);
+        }
+        .breakdown-box button:hover { background-color: var(--secondary-hover); }
+
+
+        /* Tablet and Desktop Styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+            }
+            .grid-container {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+            }
+            .controls {
+                grid-column: 1 / -1; /* Span across all columns */
+            }
+            textarea {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Phone Number Formatter & Lister</h1>
+            <p>Format numbers and then break the list into smaller chunks.</p>
+        </header>
+
+        <div class="controls">
+            <button id="formatBtn">1. Format Numbers</button>
+            <button id="breakdownBtn">2. Break this list</button>
+            <button id="copyBtn">Copy Full Output</button>
+            <button id="clearBtn">Clear All</button>
+        </div>
+
+        <div class="grid-container">
+            <div class="input-area">
+                <label for="inputNumbers">Input Numbers <span id="inputCounter" class="counter">0 lines</span></label>
+                <textarea id="inputNumbers" placeholder="Paste phone numbers here, one per line.&#10;e.g.&#10;+91 62670 35437&#10;+91 6289 925 633"></textarea>
+            </div>
+
+            <div class="output-area">
+                <label for="outputNumbers">Formatted Numbers <span id="outputCounter" class="counter">0 lines</span></label>
+                <textarea id="outputNumbers" placeholder="Formatted 10-digit numbers will appear here."></textarea>
+            </div>
+        </div>
+
+        <!-- This container will be dynamically filled with the broken-down lists -->
+        <div id="breakdown-container" class="breakdown-container"></div>
+    </div>
+
+    <script>
+        // DOM Element References
+        const inputNumbers = document.getElementById('inputNumbers');
+        const outputNumbers = document.getElementById('outputNumbers');
+        const formatBtn = document.getElementById('formatBtn');
+        const breakdownBtn = document.getElementById('breakdownBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const inputCounter = document.getElementById('inputCounter');
+        const outputCounter = document.getElementById('outputCounter');
+        const breakdownContainer = document.getElementById('breakdown-container');
+
+        const CHUNK_SIZE = 10; // How many numbers per box
+
+        // --- Core Functions ---
+
+        /**
+         * Formats the input numbers by removing the "+91 " prefix and all spaces.
+         */
+        function formatNumbers() {
+            const rawText = inputNumbers.value;
+            const lines = rawText.split('\n');
+            const formattedLines = lines
+                .map(line => {
+                    let cleanedLine = line.replace(/^\+91\s*/, '');
+                    cleanedLine = cleanedLine.replace(/\s/g, '');
+                    return cleanedLine.trim();
+                })
+                .filter(line => line !== '');
+            outputNumbers.value = formattedLines.join('\n');
+            updateCounters();
+        }
+
+        /**
+         * Breaks the formatted output list into chunks and displays them in boxes.
+         */
+        function breakdownList() {
+            const rawText = outputNumbers.value;
+            const lines = rawText.split('\n').filter(line => line.trim() !== '');
+
+            // Clear any previous breakdown
+            breakdownContainer.innerHTML = '';
+
+            if (lines.length === 0) {
+                showTemporaryMessage(breakdownBtn, "No numbers to break!", 2000);
+                return;
+            }
+
+            for (let i = 0; i < lines.length; i += CHUNK_SIZE) {
+                const chunk = lines.slice(i, i + CHUNK_SIZE);
+                createBreakdownBox(chunk, Math.floor(i / CHUNK_SIZE) + 1);
+            }
+        }
+
+        /**
+         * Creates and appends a single breakdown box to the container.
+         * @param {string[]} chunk - An array of numbers for this box.
+         * @param {number} index - The index of the box (e.g., 1, 2, 3...).
+         */
+        function createBreakdownBox(chunk, index) {
+            const box = document.createElement('div');
+            box.className = 'breakdown-box';
+
+            const title = document.createElement('h3');
+            title.textContent = `List ${index} (${chunk.length} numbers)`;
+
+            const textArea = document.createElement('textarea');
+            textArea.value = chunk.join('\n');
+            textArea.readOnly = true;
+
+            const copyBoxBtn = document.createElement('button');
+            copyBoxBtn.textContent = 'Copy';
+            copyBoxBtn.onclick = () => {
+                navigator.clipboard.writeText(textArea.value).then(() => {
+                    showTemporaryMessage(copyBoxBtn, "Copied!", 1500);
+                }).catch(err => {
+                    console.error('Failed to copy from box: ', err);
+                    showTemporaryMessage(copyBoxBtn, "Failed!", 1500);
+                });
+            };
+
+            box.appendChild(title);
+            box.appendChild(textArea);
+            box.appendChild(copyBoxBtn);
+            breakdownContainer.appendChild(box);
+        }
+
+        /**
+         * Copies the content of the main output textarea to the clipboard.
+         */
+        function copyFullOutput() {
+            if (!outputNumbers.value.trim()) {
+                showTemporaryMessage(copyBtn, "Nothing to Copy!", 1500);
+                return;
+            }
+            navigator.clipboard.writeText(outputNumbers.value).then(() => {
+                showTemporaryMessage(copyBtn, "Copied!", 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showTemporaryMessage(copyBtn, "Copy Failed!", 2000);
+            });
+        }
+
+        /**
+         * Clears all textareas and the breakdown container.
+         */
+        function clearAll() {
+            inputNumbers.value = '';
+            outputNumbers.value = '';
+            breakdownContainer.innerHTML = ''; // Clear the generated boxes
+            updateCounters();
+        }
+
+        // --- Helper & UI Functions ---
+
+        /**
+         * Updates the line counters above the main textareas.
+         */
+        function updateCounters() {
+            const inputLines = inputNumbers.value.split('\n').filter(line => line.trim() !== '');
+            inputCounter.textContent = `${inputLines.length} line${inputLines.length !== 1 ? 's' : ''}`;
+            const outputLines = outputNumbers.value.split('\n').filter(line => line.trim() !== '');
+            outputCounter.textContent = `${outputLines.length} line${outputLines.length !== 1 ? 's' : ''}`;
+        }
+        
+        /**
+         * Shows a temporary message on a button.
+         */
+        function showTemporaryMessage(buttonElement, message, duration) {
+            const originalText = buttonElement.textContent;
+            buttonElement.disabled = true;
+            buttonElement.textContent = message;
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+                buttonElement.disabled = false;
+            }, duration);
+        }
+
+        // --- Event Listeners ---
+        formatBtn.addEventListener('click', formatNumbers);
+        breakdownBtn.addEventListener('click', breakdownList);
+        copyBtn.addEventListener('click', copyFullOutput);
+        clearBtn.addEventListener('click', clearAll);
+
+        inputNumbers.addEventListener('input', updateCounters);
+        outputNumbers.addEventListener('input', updateCounters);
+        
+        document.addEventListener('DOMContentLoaded', updateCounters);
+
+    </script>
+</body>
+</html>
