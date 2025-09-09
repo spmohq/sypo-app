@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to Multiline & Deduplicator</title>
+    <style>
+        /* General Styles & Mobile First Approach */
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --secondary-color: #6c757d;
+            --secondary-hover: #5a6268;
+            --success-color: #28a745;
+            --success-hover: #218838;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --light-gray: #f8f9fa;
+            --border-color: #ced4da;
+            --text-color: #343a40;
+            --bg-color: #ffffff;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 15px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .input-area, .output-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .counter {
+            font-size: 0.85em;
+            font-weight: normal;
+            background-color: var(--light-gray);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--secondary-color);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: "Menlo", "Consolas", "Courier New", monospace;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #convertBtn { background-color: var(--primary-color); }
+        #convertBtn:hover { background-color: var(--primary-hover); }
+
+        #deduplicateBtn { background-color: var(--success-color); }
+        #deduplicateBtn:hover { background-color: var(--success-hover); }
+        
+        #copyBtn { background-color: var(--secondary-color); }
+        #copyBtn:hover { background-color: var(--secondary-hover); }
+
+        #clearBtn { background-color: var(--danger-color); }
+        #clearBtn:hover { background-color: var(--danger-hover); }
+
+        /* Tablet and Desktop Styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+            }
+            .grid-container {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+            }
+            .controls {
+                grid-column: 1 / -1; /* Span across all columns */
+            }
+            textarea {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>CSV to Multiline Converter & Deduplicator</h1>
+            <p>Paste your comma-separated data, convert it to a multiline list, and then remove duplicates.</p>
+        </header>
+
+        <div class="controls">
+            <button id="convertBtn">1. Convert to Multiline</button>
+            <button id="deduplicateBtn">2. Remove Duplicates</button>
+            <button id="copyBtn">Copy Output</button>
+            <button id="clearBtn">Clear All</button>
+        </div>
+
+        <div class="grid-container">
+            <div class="input-area">
+                <label for="csvInput">Input Data <span id="inputCounter" class="counter">0 items</span></label>
+                <textarea id="csvInput" placeholder="Paste CSV data here, e.g.&#10;1234567890,2345678901,1234567890"></textarea>
+            </div>
+
+            <div class="output-area">
+                <label for="multilineOutput">Output Result <span id="outputCounter" class="counter">0 lines</span></label>
+                <textarea id="multilineOutput" placeholder="Results will appear here."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Element References
+        const csvInput = document.getElementById('csvInput');
+        const multilineOutput = document.getElementById('multilineOutput');
+        const convertBtn = document.getElementById('convertBtn');
+        const deduplicateBtn = document.getElementById('deduplicateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const inputCounter = document.getElementById('inputCounter');
+        const outputCounter = document.getElementById('outputCounter');
+
+        // --- Core Functions ---
+
+        /**
+         * Converts comma-separated string to a multiline string.
+         */
+        function convertToMultiline() {
+            const rawText = csvInput.value;
+            if (!rawText.trim()) {
+                multilineOutput.value = '';
+                updateCounters();
+                return;
+            }
+            
+            const items = rawText
+                .split(',')
+                .map(item => item.trim()) // Remove whitespace around each item
+                .filter(item => item !== ''); // Remove empty items (e.g., from "a,b,,c")
+            
+            multilineOutput.value = items.join('\n');
+            updateCounters();
+        }
+
+        /**
+         * Removes duplicate lines from the output textarea.
+         */
+        function removeDuplicates() {
+            const rawText = multilineOutput.value;
+            if (!rawText.trim()) {
+                updateCounters();
+                return;
+            }
+            
+            const lines = rawText.split('\n').filter(line => line.trim() !== '');
+            const uniqueLines = [...new Set(lines)]; // The Set object automatically handles uniqueness
+            
+            multilineOutput.value = uniqueLines.join('\n');
+            updateCounters();
+        }
+
+        /**
+         * Copies the content of the output textarea to the clipboard.
+         */
+        function copyOutput() {
+            if (!multilineOutput.value.trim()) {
+                showTemporaryMessage(copyBtn, "Nothing to Copy!", 1500);
+                return;
+            }
+            
+            navigator.clipboard.writeText(multilineOutput.value).then(() => {
+                showTemporaryMessage(copyBtn, "Copied!", 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showTemporaryMessage(copyBtn, "Copy Failed!", 2000);
+            });
+        }
+
+        /**
+         * Clears both input and output textareas.
+         */
+        function clearAll() {
+            csvInput.value = '';
+            multilineOutput.value = '';
+            updateCounters();
+        }
+
+        // --- Helper & UI Functions ---
+
+        /**
+         * Updates the item/line counters above the textareas.
+         */
+        function updateCounters() {
+            // Update input counter
+            const inputItems = csvInput.value.split(',').filter(item => item.trim() !== '');
+            inputCounter.textContent = `${inputItems.length} item${inputItems.length !== 1 ? 's' : ''}`;
+            
+            // Update output counter
+            const outputLines = multilineOutput.value.split('\n').filter(line => line.trim() !== '');
+            outputCounter.textContent = `${outputLines.length} line${outputLines.length !== 1 ? 's' : ''}`;
+        }
+        
+        /**
+         * Shows a temporary message on a button.
+         * @param {HTMLElement} buttonElement - The button to change the text of.
+         * @param {string} message - The message to display.
+         * @param {number} duration - How long to display the message in milliseconds.
+         */
+        function showTemporaryMessage(buttonElement, message, duration) {
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = message;
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+            }, duration);
+        }
+
+        // --- Event Listeners ---
+        convertBtn.addEventListener('click', convertToMultiline);
+        deduplicateBtn.addEventListener('click', removeDuplicates);
+        copyBtn.addEventListener('click', copyOutput);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Live updates for counters as user types
+        csvInput.addEventListener('input', updateCounters);
+        multilineOutput.addEventListener('input', updateCounters);
+        
+        // Initial count on page load
+        document.addEventListener('DOMContentLoaded', updateCounters);
+
+    </script>
+</body>
+</html>
