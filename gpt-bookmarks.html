@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CustomGPT Bookmarks</title>
+    <style>
+        /* General Body Styling & Font */
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --card-bg: #ffffff;
+            --body-bg: #f4f4f9;
+            --text-color: #333333;
+            --heading-color: #0056b3;
+            --instruction-color: #555555;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Main Container for the Cards */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap; /* This is key for responsiveness! */
+            gap: 25px; /* Space between cards */
+            justify-content: center;
+        }
+
+        /* Main Page Header */
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        /* Individual Bookmark Card Styling */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            /* Flex properties make the cards responsive */
+            flex: 1 1 300px; /* Grow, Shrink, Basis */
+            max-width: 500px; /* Prevents cards from getting too wide on large screens */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h2 {
+            font-size: 1.5em;
+            color: var(--heading-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            margin-bottom: 15px;
+            flex-grow: 1; /* Pushes the button to the bottom */
+        }
+        
+        .card .description {
+            color: var(--text-color);
+        }
+
+        .card .instruction {
+            color: var(--instruction-color);
+            font-style: italic;
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        /* Link/Button Styling */
+        .link-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: auto; /* Aligns button to the bottom of the card */
+        }
+
+        .link-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px); /* Slight lift effect on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>My CustomGPT Bookmarks</h1>
+
+        <!-- Bookmark 1: Lead Magnet Ninja -->
+        <div class="card">
+            <h2>Lead Magnet Ninja</h2>
+            <p class="description">
+                Creates a High Converting Lead magnet For Any Affiliate Offer. Paste the URL to your affiliate offer page here, and it’ll create a high-converting lead magnet (around 1500–2000 words) tailored to that product or service.
+            </p>
+            <p class="instruction">
+                Enter in the URL to the affiliate offer page.
+            </p>
+            <a href="https://chatgpt.com/g/g-67e993faa428819198ceeb33bae77371-lead-magnet-ninja" target="_blank" rel="noopener noreferrer" class="link-button">
+                Open Lead Magnet Ninja
+            </a>
+        </div>
+
+        <!-- Bookmark 2: Affiliate Pain Point Email Writer -->
+        <div class="card">
+            <h2>Affiliate Pain Point Email Writer</h2>
+            <p class="description">
+                Writes persuasive, emotionally driven email copy based on an affiliate offer's sales page. This CustomGPT is here to help you write powerful, pain-driven emails that sell. It just needs the URL of the affiliate offer (or the main points from the sales page). Once it has got that, it’ll whip up an email around 180 words that hits the reader's pain, shows them a solution, and nudges them toward your affiliate link.
+            </p>
+            <p class="instruction">
+                Drop that link!
+            </p>
+            <a href="https://chatgpt.com/g/g-67f590f6da8c81919c68ede472f29fde-affiliate-pain-point-email-writer/c/68cdb979-653c-8333-bb23-852c9af141fc" target="_blank" rel="noopener noreferrer" class="link-button">
+                Open Email Writer
+            </a>
+        </div>
+
+        <!-- Bookmark 3: Commission Ninja Email Sequence -->
+        <div class="card">
+            <h2>Commission Ninja Email Sequence</h2>
+            <p class="description">
+                Writes high-converting 5-part email sequences for affiliate offers.
+                <br><br>
+                Examples:
+                <br>1. Analyze this URL and write a 5-part email sequence for it: [Insert URL]
+                <br>2. Write an email sequence for an affiliate product about weight loss.
+                <br>3. Create a persuasive email sequence for a cold audience selling a digital course.
+                <br>4. Craft a 5-part email sequence for an affiliate offer in the finance niche.
+            </p>
+            <p class="instruction">
+                To get started, please enter a URL you'd like me to work with.
+            </p>
+            <a href="https://chatgpt.com/g/g-67bbbe2fd9c481918e636c363a04d2da-commission-ninja-email-sequence/c/68cdbafe-dba0-8328-80d4-aef824a5140a" target="_blank" rel="noopener noreferrer" class="link-button">
+                Open Commission Ninja
+            </a>
+        </div>
+
+        <!-- Bookmark 4: Lead Capture Page Writer -->
+        <div class="card">
+            <h2>Lead Capture Page Writer</h2>
+            <p class="description">
+                Creates concise and persuasive copy for opt-in pages using content directly from the user’s uploaded lead magnet (in PDF format). It's here to write opt-in page copy that turns your lead magnet into a list-building machine (minus the hype).
+            </p>
+            <p class="instruction">
+                Upload Your Leadmagnet In PDF Format.
+            </p>
+            <a href="https://chatgpt.com/g/g-67fe3eb774d08191a39887fc417f5789-lead-capture-page-writer" target="_blank" rel="noopener noreferrer" class="link-button">
+                Open Page Writer
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
