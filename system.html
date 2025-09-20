@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Distribution System</title>
+    <style>
+        /* --- Global Styles & Resets --- */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #f4f7f6;
+            --font-color: #333;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--font-color);
+            line-height: 1.7;
+            padding: 20px;
+        }
+
+        /* --- Main Layout Container --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column; /* Mobile First: Stack boxes vertically */
+            gap: 25px;
+        }
+
+        /* --- Content Box Styling --- */
+        .content-box {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* --- List & Content Styling --- */
+        ol, ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+        
+        ul li {
+            margin-top: 10px;
+            font-size: 0.95em;
+            color: #555;
+        }
+        
+        .note {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+            color: #004085;
+        }
+
+        code {
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            color: #c7254e;
+        }
+
+        /* --- Media Query for Responsiveness --- */
+        /* For tablets and desktops (screens wider than 768px) */
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+            .container {
+                flex-direction: row; /* Switch to side-by-side layout */
+                align-items: flex-start; /* Align boxes to the top */
+            }
+            .content-box {
+                flex: 1; /* Each box takes up equal space */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Content System & Distribution Channel</h1>
+    </header>
+
+    <main class="container">
+
+        <!-- CONTENT BOX 1 -->
+        <section class="content-box">
+            <h2>This is the simple system:</h2>
+            <ol>
+                <li>LM</li>
+                <li>Sequence</li>
+                <li>LCP</li>
+                <li>Email2Broadcast</li>
+            </ol>
+            <p class="note">
+                <strong>Note:</strong> All content you create, publish and share is to send traffic to your LCP.
+            </p>
+        </section>
+
+        <!-- CONTENT BOX 2 -->
+        <section class="content-box">
+            <h2>How to set up your content distribution channel:</h2>
+            <ol>
+                <li>
+                    <strong>LM</strong> - PDF
+                </li>
+                <li>
+                    <strong>Hosting of LP</strong> - <code>Graphy.com</code>
+                    <ul>
+                        <li>As it gives you the opportunity to capture the emails of the downloaders. You can add them to your Google Contacts and import to your autoresponder.</li>
+                        <li>For sequence - you can use the 'send later' feature of Gmail.</li>
+                        <li>For broadcast - you will use your autoresponder.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>LCP</strong> - dedicated domain, repo and your LM's "Lead Capture Page's Copy".
+                </li>
+                <li>
+                    <strong>For other contents, to drive traffic to your LCP, you need two things:</strong>
+                    <ol style="margin-top: 15px;">
+                        <li>Persona of Your LM's audience</li>
+                        <li>Pain Points etc 4 emotions of Your LM's audience</li>
+                    </ol>
+                </li>
+            </ol>
+        </section>
+
+    </main>
+
+</body>
+</html>
