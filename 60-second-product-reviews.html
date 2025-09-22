@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Review Prompt Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5); /* Semi-transparent card background */
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    main {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); /* For Safari */
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+    input[type="text"],
+    textarea {
+        width: 100%;
+        background-color: var(--input-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    input[type="text"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+    }
+    .generate-button {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--bg-gradient-end);
+        background-color: var(--accent-primary);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    .generate-button:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-2px);
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    .button-group {
+        margin-top: auto; /* Pushes buttons to the bottom of the card */
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap; /* For better responsiveness */
+    }
+    .copy-button, .cta-button {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none; /* For the <a> tag */
+    }
+    .copy-button:hover, .cta-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text, input[type="text"], textarea {
+          font-size: 0.9rem;
+      }
+      .button-group {
+          justify-content: center;
+      }
+      .copy-button, .cta-button {
+          width: 100%;
+          justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Product Review Prompt Generator</h1>
+      <p class="subtitle">Enter your product details to generate a custom review prompt.</p>
+    </header>
+
+    <main>
+        <div class="prompt-card">
+            <h2>1. Enter Product Details</h2>
+            <form id="prompt-form">
+              <div class="form-group">
+                <label for="productName">Name of the product</label>
+                <input type="text" id="productName" placeholder="e.g., The Ultimate SEO Course" required>
+              </div>
+              <div class="form-group">
+                <label for="productInfo">Information about the product</label>
+                <textarea id="productInfo" rows="5" placeholder="e.g., A 10-module video course covering keyword research, on-page SEO, link building, and more. Includes cheat sheets and access to a private community." required></textarea>
+              </div>
+              <button type="submit" id="generateBtn" class="generate-button">Generate Prompt</button>
+            </form>
+        </div>
+
+        <div class="prompt-card" id="output-card">
+          <h2>2. Your Generated Prompt</h2>
+          <pre id="generatedPrompt" class="prompt-text">Your generated prompt will appear here once you enter the product details and click the "Generate Prompt" button above.</pre>
+          <div class="button-group">
+            <a href="https://chatgpt.com/g/g-Q9enkhVav-60-second-product-reviews" target="_blank" rel="noopener noreferrer" class="cta-button">
+                <span>Generate Your 60-Second Product Reviews</span>
+            </a>
+            <button class="copy-button" data-target="generatedPrompt">
+                <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                <span class="button-text">Copy Prompt</span>
+            </button>
+          </div>
+        </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const promptForm = document.getElementById('prompt-form');
+      const productNameInput = document.getElementById('productName');
+      const productInfoInput = document.getElementById('productInfo');
+      const generatedPromptOutput = document.getElementById('generatedPrompt');
+      const outputCard = document.getElementById('output-card');
+
+      // --- Prompt Generation Logic ---
+      promptForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent form from reloading the page
+        
+        const productName = productNameInput.value.trim();
+        const productInfo = productInfoInput.value.trim();
+
+        if (!productName || !productInfo) {
+          alert('Please fill out both product name and information fields.');
+          return;
+        }
+
+        const promptText = `Name of the product: ${productName}\n\nHere's the information about the product:\n${productInfo}`;
+
+        generatedPromptOutput.textContent = promptText;
+
+        // Scroll to the generated prompt for a better user experience
+        outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      // --- Copy Button Logic (using event delegation on main) ---
+      const mainContainer = document.querySelector('main');
+      mainContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textElement = document.getElementById(targetId);
+        
+        if (textElement.textContent.startsWith('Your generated prompt will appear here')) {
+          alert('Please generate a prompt first before copying.');
+          return;
+        }
+
+        const textToCopy = textElement.textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
