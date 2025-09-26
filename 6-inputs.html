@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Op-Ed Prompt Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 950px; /* Wider container for more inputs */
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .inputs-container {
+      margin-bottom: 40px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 30px;
+    }
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .input-group.full-width {
+        grid-column: 1 / -1;
+    }
+    .input-group label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .input-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    .input-group input:focus,
+    .input-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 400;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    .dynamic-content {
+        background-color: rgba(34, 211, 238, 0.15);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: var(--accent-hover);
+        transition: background-color 0.3s;
+    }
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon { width: 16px; height: 16px; }
+    .copy-button .copied-icon { display: none; }
+    .copy-button.copied .copy-icon { display: none; }
+    .copy-button.copied .copied-icon { display: inline-block; }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    /* --- START OF ADDED CSS --- */
+    .guidelines-container {
+      margin-bottom: 40px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 30px;
+    }
+    .guidelines-container h3 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .guidelines-container h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 10px;
+    }
+    .guideline-item {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+    .guideline-item strong {
+      display: block;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .guideline-item .explanation {
+      font-style: italic;
+    }
+    .guideline-list {
+      list-style-position: inside;
+      padding-left: 5px;
+      margin-top: 8px;
+    }
+    /* --- END OF ADDED CSS --- */
+
+    @media (max-width: 768px) {
+      .inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      body { padding: 20px 15px; }
+      h1 { font-size: 2rem; }
+      .prompt-card h2 { font-size: 1.4rem; }
+      .prompt-text { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Advanced Op-Ed Prompt Generator</h1>
+      <p class="subtitle">Fill in the fields below to generate a detailed, structured prompt for your Op-Ed.</p>
+    </header>
+
+    <!-- --- START OF ADDED HTML --- -->
+    <div class="guidelines-container">
+        <h3>Guidelines</h3>
+        <h4>FOUNDATION: ৩. প্রতিষ্ঠা করতে চাওয়া মূল বিষয় (Core Concept to Instil): What to do</h4>
+        <p class="guideline-item">বিষয়টি হলো: e.g., বয়স্ক নাগরিকদের জন্য ডিজিটাল সাক্ষরতা।</p>
+        
+        <div class="guideline-item">
+            <strong>১. লেখকের অনুপ্রেরণাদায়ক বিশ্বাস (Author’s Inspiring Belief):</strong>
+            <span class="explanation">Logic or reason, as the author's belief is, of what to do</span>
+        </div>
+        <div class="guideline-item">
+            <strong>২. প্রতিষ্ঠা করতে চাওয়া মূল বিশ্বাস (Core Belief to Instil):</strong>
+            <span class="explanation">Outcome of what to do i.e., what will be achieved</span>
+        </div>
+        <div class="guideline-item">
+            <strong>৩. প্রতিষ্ঠা করতে চাওয়া মূল বিষয় (Core Concept to Instil):</strong>
+            <span class="explanation">What to do</span>
+        </div>
+        <div class="guideline-item">
+            <strong>৪. প্রতিষ্ঠা করার উপায় বা পদ্ধতি (Core Approach/Way to Instil):</strong>
+            <span class="explanation">How to do that</span>
+        </div>
+        <div class="guideline-item">
+            <strong>৫. পোস্টের জন্য মূল পয়েন্টসমূহ (Points for the Post):</strong>
+            <span class="explanation">Why it's necessary to do</span>
+            <ul class="guideline-list">
+                <li>আজকের দিনে ডিজিটাল বিভাজন ক্রমেই বাড়ছে।</li>
+                <li>একাকীত্ব বয়স্কদের স্বাস্থ্যের জন্য ঝুঁকিপূর্ণ হয়ে উঠছে।</li>
+                <li>তরুণদের অংশগ্রহণ এই ফাঁক পূরণের জন্য কার্যকর সমাধান হতে পারে।</li>
+            </ul>
+        </div>
+        <div class="guideline-item">
+            <strong>৬. পোস্টের বার্তাগুলি (Messages for the Post):</strong>
+            <span class="explanation">Importance of the outcome of what to do</span>
+            <ul class="guideline-list">
+                <li>সমাজের প্রতি আমাদের দায়িত্ব আছে।</li>
+                <li>ছোট পদক্ষেপও বড় পরিবর্তনের সূচনা করতে পারে।</li>
+                <li>প্রযুক্তির আসল উদ্দেশ্য হলো মানুষকে একসঙ্গে আনা, আলাদা করে দেওয়া নয়।</li>
+            </ul>
+        </div>
+        <div class="guideline-item">
+            <strong>৭. বিষয়ের ধরণ (Genre of Topic):</strong>
+            <span class="explanation">এটি একটি সামাজিক বিষয়।</span>
+        </div>
+        <div class="guideline-item">
+            <strong>৮. সমস্যার ধরন (Type of Issue):</strong>
+            <span class="explanation">এটি একটি স্থানীয় সম্প্রদায়ভিত্তিক সমস্যা।</span>
+        </div>
+    </div>
+    <!-- --- END OF ADDED HTML --- -->
+
+    <div class="inputs-container" id="inputContainer">
+        <div class="inputs-grid">
+            <div class="input-group">
+                <label for="authorBelief">Author’s Inspiring Belief</label>
+                <input type="text" id="authorBelief" class="prompt-input" data-target="authorBeliefDisplay" placeholder="e.g., Every voice deserves to be heard">
+            </div>
+            <div class="input-group">
+                <label for="coreBelief">Core Belief to Instil</label>
+                <input type="text" id="coreBelief" class="prompt-input" data-target="coreBeliefDisplay" placeholder="e.g., Community action creates change">
+            </div>
+            <div class="input-group">
+                <label for="coreConcept">Core Concept to Instil</label>
+                <input type="text" id="coreConcept" class="prompt-input" data-target="coreConceptDisplay" placeholder="e.g., Digital literacy for senior citizens">
+            </div>
+            <div class="input-group">
+                <label for="coreApproach">Core Approach/Way to Instil</label>
+                <input type="text" id="coreApproach" class="prompt-input" data-target="coreApproachDisplay" placeholder="e.g., Through intergenerational workshops">
+            </div>
+            <div class="input-group full-width">
+                <label for="postPoints">Points for the Post</label>
+                <textarea id="postPoints" class="prompt-input" data-target="postPointsDisplay" placeholder="- The digital divide is widening...&#10;- Loneliness is a health risk...&#10;- Young volunteers can bridge the gap..."></textarea>
+            </div>
+            <div class="input-group full-width">
+                <label for="postMessages">Messages for the Post</label>
+                <textarea id="postMessages" class="prompt-input" data-target="postMessagesDisplay" placeholder="- We have a social responsibility.&#10;- Small actions lead to big impacts.&#10;- Technology should connect, not isolate."></textarea>
+            </div>
+            <div class="input-group">
+                <label for="genre">Genre of topic</label>
+                <input type="text" id="genre" class="prompt-input" data-target="genreDisplay" placeholder="e.g., social, political, cultural">
+            </div>
+            <div class="input-group">
+                <label for="issueType">Type of issue</label>
+                <input type="text" id="issueType" class="prompt-input" data-target="issueTypeDisplay" placeholder="e.g., local community issue">
+            </div>
+        </div>
+    </div>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        <div class="prompt-card">
+          <h2>Generated Prompt</h2>
+          <pre id="generatedPrompt" class="prompt-text">Write all answers in classic, serious Bengali (India) of international standard, even if my request is in English.
+
+Based on the 6 basic points and on William E. Blundell’s principles from The Art and Craft of Feature Writing, what would be a strong foundational structure for writing a powerful Op-Ed, using your last answer as the base?
+
+Since this is a <span class="dynamic-content" id="issueTypeDisplay" data-placeholder="[Type of issue]">[Type of issue]</span>, what personal or local lens could I bring in—using a Blundell-inspired technique—to make the Op-Ed feel more urgent and relatable?
+
+Special Instruction:
+Apply Blundell’s structural formula, using these adaptable core components:
+- Lead (Lede): Emotional or intellectual hook
+- Nut Graf: The “what this is really about” paragraph
+- Focus: Central theme or angle
+- Background: Relevant history or context
+- Evidence: Supporting data, anecdotes, or expert input
+- Development: Exploration of consequences, counterarguments, or nuance
+- Close: Return to the opening or leave a strong final impression
+
+Adjust the weight of each section depending on the <span class="dynamic-content" id="genreDisplay" data-placeholder="[Genre of topic -e.g., political, social, cultural]">[Genre of topic -e.g., political, social, cultural]</span>, keeping in mind that Blundell’s structure is a flexible guide, not a rigid formula.
+
+Style Guidelines:
+- Always use the formal “আপনি,” never “তুমি.”
+- Tone: warm, conversational, approachable.
+- Voice: first person, descriptive, natural.
+- Style: like a close friend and trusted authority speaking one-on-one in a natural, face-to-face manner.
+
+Here are the 6 basic points:
+
+Author’s Inspiring Belief:
+<span class="dynamic-content" id="authorBeliefDisplay" data-placeholder="[Author’s Inspiring Belief]">[Author’s Inspiring Belief]</span>
+Core Belief to Instil:
+<span class="dynamic-content" id="coreBeliefDisplay" data-placeholder="[Core Belief to Instil]">[Core Belief to Instil]</span>
+Core Concept to Instil:
+<span class="dynamic-content" id="coreConceptDisplay" data-placeholder="[Core Concept to Instil]">[Core Concept to Instil]</span>
+Core Approach/Way to Instil:
+<span class="dynamic-content" id="coreApproachDisplay" data-placeholder="[Core Approach/Way to Instil]">[Core Approach/Way to Instil]</span>
+Points for the Post:
+<span class="dynamic-content" id="postPointsDisplay" data-placeholder="[Points for the Post]">[Points for the Post]</span>
+Messages for the Post:
+<span class="dynamic-content" id="postMessagesDisplay" data-placeholder="[Messages for the Post]">[Messages for the Post]</span></pre>
+          <button class="copy-button" data-target="generatedPrompt">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputContainer = document.getElementById('inputContainer');
+
+      // --- Dynamic Topic Update Logic using Event Delegation ---
+      inputContainer.addEventListener('input', (event) => {
+        if (event.target.classList.contains('prompt-input')) {
+          const inputElement = event.target;
+          const targetId = inputElement.dataset.target;
+          const displayElement = document.getElementById(targetId);
+          
+          if (displayElement) {
+            const newText = inputElement.value.trim();
+            const placeholder = displayElement.dataset.placeholder;
+            displayElement.textContent = newText === '' ? placeholder : newText;
+          }
+        }
+      });
+      
+      // --- Copy Button Logic ---
+      const promptsContainer = document.getElementById('promptsContainer');
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
